@@ -60,7 +60,7 @@ puts:
     ret
 
 ; DI - buffer
-; CX - max
+; max : 0x100
 gets:
  xor cx, cx ; counter
  read_next:
