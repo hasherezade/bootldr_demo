@@ -1,7 +1,7 @@
 megs: 32
 romimage: file=/usr/share/bochs/BIOS-bochs-latest, address=0xfffe0000
 vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
-floppya: 1_44=demo/boot.bin, status=inserted
+floppya: 1_44=boot.bin, status=inserted
 boot: a
 log: bochsout.txt
 mouse: enabled=0
