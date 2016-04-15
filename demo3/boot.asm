@@ -113,7 +113,7 @@ to_hex_ascii:
  ret
 
 ; DL - drive
-; BX - buffer pointer
+; buffer pointer: 0x8000
 find_disk:
   mov bx, 0x8000 ; buffer
   mov ah, 0x02 ; read
