@@ -26,7 +26,7 @@ bochs
 </pre>
 2) With <b>qemu</b></br>
 <pre>
-qemu-system-i386 [filename].bin
+qemu-system-i386 -drive if=floppy,index=0,format=raw,file=[filename].bin
 </pre>
 3) <b>From disk</b></br>
 Copy to flash disk (as root)
