@@ -92,7 +92,8 @@ puts:
 ; SI - buffer
 print_byte:
  mov al, BYTE [si]
- sar al, 0x8
+ and al, 0xF0
+ sar al, 0x4
  call to_hex_ascii
  PUTC
  mov al, BYTE [si]
