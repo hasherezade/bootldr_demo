@@ -1,6 +1,4 @@
 ; mini bootloader for educational purposes
-; read first sector from each avaliable disk
-; checks and displays how many disks are bootable
 ;
 ; CC-BY: hasherezade
 ;
@@ -62,15 +60,26 @@ main:
  CHECK_DISK 1
  CHECK_DISK 0x80
  CHECK_DISK 0x81
- 
- mov al, BYTE [disknum]
- test al, al
- je end
-  PRINT_STR disk_found
-  PRINT_BYTE disknum
 
-  PRINT_STR bootable_found
-  PRINT_BYTE bootablenum
+ PRINT_STR disk_found
+ xor cx,cx
+ mov cl, BYTE [disknum]
+ list_disks:
+  test cx,cx
+  jz list_end
+  push cx
+   mov si, disks_id
+   add si, cx
+   PRINT_BYTE si
+   pop cx
+   dec cx
+   jmp list_disks
+ list_end:
+
+ PRINT_STR total_found
+ PRINT_BYTE disknum
+ PRINT_STR bootable_found
+ PRINT_BYTE bootablenum
  end:
  PRINT_STR banner_end
  GETC
@@ -116,6 +125,8 @@ to_hex_ascii:
 ; DL - drive
 ; buffer pointer: 0x8000
 find_disk:
+  mov BYTE [curr_disk], dl
+  PRINT_BYTE curr_disk
   mov bx, 0x8000 ; buffer
   mov ah, 0x02 ; read
   mov al, 0x01 ; sector count
@@ -129,6 +140,12 @@ find_disk:
    cmp ax, 0xAA55
    jne find_disk_end
     add BYTE [bootablenum], 1
+    xor ax,ax
+    mov al, BYTE [disknum]
+    mov si, disks_id
+    add si, ax
+    mov dl, BYTE[curr_disk]
+    mov BYTE[si], dl
   find_disk_end:
   ret
 
@@ -140,8 +157,11 @@ banner db 'Listing disks...', 13, 10, 0
 banner_end db 'Finished! Press any key!', 13, 10, 0
 disknum db 0
 bootablenum db 0
-disk_found db 'Found disks: ', 0
+disk_found db 'Found disks:', 13, 10, 0
+total_found db 'Total: ', 0
 bootable_found db 'Bootable: ', 0
+curr_disk db 0
+disks_id db 0, 0, 0, 0
 
 times 510-($-$$) db 0	;padding
 dw 0xAA55		;end signature
