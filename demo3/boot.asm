@@ -143,6 +143,15 @@ find_disk:
   xor ah, ah ;reset
   int 0x13
   jc find_disk_end ;operation failed
+
+  xor ax,ax
+  mov al, BYTE [disknum]
+  mov si, disks_id
+  add si, ax
+  mov dl, BYTE[curr_disk]
+  mov BYTE[si], dl
+  add BYTE [disknum], 1
+
   mov bx, 0x8000 ; buffer
   mov ah, 0x02 ; read
   mov al, 0x01 ; sector count
@@ -151,17 +160,10 @@ find_disk:
   mov cl, 0x01 ; sector number
   int 0x13
   jc find_disk_end ; carry bit is set on read error
-   add BYTE [disknum], 1
    mov ax, WORD[0x8200 - 2]
    cmp ax, 0xAA55
    jne find_disk_end
     add BYTE [bootablenum], 1
-    xor ax,ax
-    mov al, BYTE [disknum]
-    mov si, disks_id
-    add si, ax
-    mov dl, BYTE[curr_disk]
-    mov BYTE[si], dl
   find_disk_end:
   ret
 
