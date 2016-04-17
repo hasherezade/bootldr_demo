@@ -127,6 +127,9 @@ to_hex_ascii:
 find_disk:
   mov BYTE [curr_disk], dl
   PRINT_BYTE curr_disk
+  xor ah, ah ;reset
+  int 0x13
+  jc find_disk_end ;operation failed
   mov bx, 0x8000 ; buffer
   mov ah, 0x02 ; read
   mov al, 0x01 ; sector count
