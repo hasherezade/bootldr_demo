@@ -16,8 +16,10 @@
 ;macros
 
 %macro PRINT_STR 1 ;buffer
+push si
 mov si, %1
 call puts
+pop si
 %endmacro
 
 %macro GETC 0
@@ -43,6 +45,7 @@ call puts
 
 %macro PRINT_BYTE 1 ; buffer
  mov si, %1
+ mov al, BYTE[si]
  call print_byte
  PRINT_STR enter_key
 %endmacro
@@ -67,11 +70,21 @@ main:
  list_disks:
   test cx,cx
   jz list_end
-  push cx
+
+   push cx
    mov si, disks_id
    add si, cx
+   mov al, BYTE[si]
+   cmp al, 0x80
+   jnb _print_hd
+   PRINT_STR floppy_label
+   jmp label_printed
+   _print_hd:
+   PRINT_STR hd_label
+   label_printed:
    PRINT_BYTE si
    pop cx
+
    dec cx
    jmp list_disks
  list_end:
@@ -98,14 +111,14 @@ puts:
   puts_end:
     ret
 
-; SI - buffer
+; AL - byte to be printed
 print_byte:
- mov al, BYTE [si]
+ push ax
  and al, 0xF0
  sar al, 0x4
  call to_hex_ascii
  PUTC
- mov al, BYTE [si]
+ pop ax ;recover original value
  call to_hex_ascii
  PUTC
  ret
@@ -160,6 +173,8 @@ banner db 'Listing disks...', 13, 10, 0
 banner_end db 'Finished! Press any key!', 13, 10, 0
 disknum db 0
 bootablenum db 0
+hd_label db 'Hard disk: ', 0
+floppy_label db 'Floppy: ', 0
 disk_found db 'Found disks:', 13, 10, 0
 total_found db 'Total: ', 0
 bootable_found db 'Bootable: ', 0
