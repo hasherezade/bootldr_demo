@@ -28,10 +28,26 @@ bochs
 <pre>
 qemu-system-i386 -drive if=floppy,index=0,format=raw,file=[filename].bin
 </pre>
-3) <b>From disk</b></br>
+3) <b>From a flash disk</b></br>
 Copy to flash disk (as root)
 example if the flash disk is /dev/sdb:
 <pre>
 dd if=[filename].bin of=/dev/sdb bs=512 count=1
 </pre>
+4) <b>From ISO</b></br>
+- make a folder where you want to store the ISO content, i.e. 'cdcontent'
+- make inside a folder 'boot'
+- copy your bootloader as: cdcontent/boot/loader.sys
+- make the ISO image by given commands:
 
+<pre>
+# this example requires: xorriso
+# alternatives:
+# prog="mkisofs"
+# prog="genisoimage"
+
+prog="xorriso -as mkisofs"
+$prog -R -J -c boot/bootcat \
+      -b boot/loader.sys -no-emul-boot -boot-load-size 1 \
+      -o ./bootable.iso ./cdcontent
+</pre>
