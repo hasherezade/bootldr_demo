@@ -38,7 +38,8 @@ dd if=[filename].bin of=/dev/sdb bs=512 count=1
 - make a folder where you want to store the ISO content, i.e. 'cdcontent'
 - make inside a folder 'boot'
 - copy your bootloader as: cdcontent/boot/loader.sys
-- make the ISO image by given commands:
+- make the ISO image by given script:<br/>
+<i>make_bootable_iso.sh</i>
 
 <pre>
 # this example requires: xorriso
